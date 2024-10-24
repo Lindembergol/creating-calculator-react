@@ -1,70 +1,121 @@
-# Getting Started with Create React App
+# App Calculadora com React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este projeto é uma implementação simples de uma calculadora em React utilizando componentes customizados. Abaixo estão os principais recursos e funcionalidades implementadas.
 
-## Available Scripts
+## Componentes Utilizados
 
-In the project directory, you can run:
+### 1. **Container** e **Content**
+Estes componentes são responsáveis por organizar a estrutura da calculadora na tela.
 
-### `npm start`
+### 2. **Row**
+Componente que organiza os botões em linhas.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 3. **Input**
+Componente que exibe o valor atual da operação.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 4. **Button**
+Cada botão representa uma ação ou número a ser utilizado na calculadora.
 
-### `npm test`
+## Estados
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+O aplicativo utiliza três estados principais:
 
-### `npm run build`
+- `currentNumber`: mantém o número atual exibido no visor da calculadora.
+- `firstNumber`: armazena o primeiro número da operação.
+- `operation`: guarda a operação matemática selecionada pelo usuário.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Funcionalidades
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 1. **handleOnClear**
+Função responsável por limpar os valores e resetar a calculadora.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```javascript
+const handleOnClear = () => {
+  setCurrentNumber('0');
+  setFirstNumber('0');
+  setOperation('');
+}
+```
+### 2. **handleAddNumber**
+Função que adiciona números ao visor da calculadora, concatenando os números digitados.
 
-### `npm run eject`
+```javascript
+const handleAddNumber = (number) => {
+  setCurrentNumber(prev => `${prev === '0' ? '' : prev}${number}`);
+}
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 3. **handleSumNumbers**
+Função que realiza a soma entre o primeiro número e o número atual.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```javascript
+const handleSumNumbers = () => {
+  if (firstNumber === '0') {
+    setFirstNumber(String(currentNumber));
+    setCurrentNumber('0');
+    setOperation('+');
+  } else {
+    const sum = Number(firstNumber) + Number(currentNumber);
+    setCurrentNumber(String(sum));
+    setOperation('');
+  }
+}
+```
+Para as demais operações como subtração, divisão e multiplicação, basta mudar o valor do estado **operation** para as demais operações aritméticas.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 4. **handleRemoveNumbers**
+Remove o último dígito do display.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```javascript
+const handleRemoveNumbers = () => {
+  setCurrentNumber(prev => `${prev.substring(0, prev.length - 1)}`);
+}
+```
 
-## Learn More
+### 4. **handlEquals**
+Executa a operação matemática selecionada.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```javascript
+const handlEquals = () => {
+  if (firstNumber !== '0' && operation !== '' && currentNumber !== 0) {
+    switch (operation) {
+      case '+':
+        handleSumNumbers();
+        break;
+      case '-':
+        handleMinusNumbers();
+        break;
+      case 'x':
+        handleMultNumbers();
+        break;
+      case '/':
+        handleDivNumbers();
+        break;
+      default:
+        break;
+    }
+  }
+}
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## **Interface da Calculadora**
 
-### Code Splitting
+- O visor é atualizado à medida que os números são adicionados.
+- O usuário pode realizar operações matemáticas básicas: soma, subtração, multiplicação e divisão.
+- Há botões para limpar os valores, remover o último dígito e calcular o resultado da operação atual.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## **Exemplo de Interface:**
+```javascript
+<Row>
+  <Button label="C" onClick={handleOnClear} />
+  <Button label="<" onClick={handleRemoveNumbers} />
+  <Button label="/" onClick={handleDivNumbers} />
+  <Button label="x" onClick={handleMultNumbers} />
+</Row>
+```
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## **Execução do Projeto**
+Para executar a aplicação, siga os passos abaixo:
+- Clone o repositório.
+- Instale as dependências utilizando npm install.
+- Execute o projeto com npm start.
